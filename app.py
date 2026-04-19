@@ -386,7 +386,7 @@ appliance_db = {
     "LED Light":             {"watt": 15,   "type": "continuous"},
     "TV":                    {"watt": 120,  "type": "continuous"},
     "Air Conditioner":       {"watt": 1500, "type": "continuous"},
-    "Refrigerator":          {"watt": 200,  "type": "fixed", "hours": 8},
+    "Refrigerator":          {"watt": 200,  "type": "fixed", "hours": 12},
     "Washing Machine":       {"watt": 500,  "type": "fixed", "hours": 0.5},
     "Microwave Oven":        {"watt": 1200, "type": "fixed", "hours": 0.3},
     "Water Heater (Geyser)": {"watt": 2000, "type": "fixed", "hours": 1},
@@ -429,6 +429,31 @@ col1, col2 = st.columns([1, 1.65], gap="large")
 # ═══════════════════════════════ LEFT PANEL ═══════════════════════════════
 with col1:
     st.markdown('<span class="gs-label">Configure</span>', unsafe_allow_html=True)
+    # ── STATE SELECTION ──
+    state_tariff = {
+        "Bihar": 7.5,
+        "Delhi": 8,
+        "Maharashtra": 9,
+        "Karnataka": 8.5,
+        "Uttar Pradesh": 7,
+    }
+
+    state = st.selectbox("Select your State", list(state_tariff.keys()))
+    rate = state_tariff[state]
+
+    # ── OPTIONAL BILL INPUT ──
+    use_bill = st.toggle("Use last 3 months bill (optional)")
+
+    if use_bill:
+        st.markdown('<span class="gs-label">Last 3 Months Electricity Bill</span>', unsafe_allow_html=True)
+
+        b1 = st.number_input("Month 1 (₹)", min_value=0)
+        b2 = st.number_input("Month 2 (₹)", min_value=0)
+        b3 = st.number_input("Month 3 (₹)", min_value=0)
+
+        avg_bill = (b1 + b2 + b3) / 3 if (b1 + b2 + b3) > 0 else None
+    else:
+        avg_bill = None
     st.markdown('<div class="gs-panel-title">Select Appliances</div>', unsafe_allow_html=True)
 
     selected_appliances = st.multiselect(
@@ -487,7 +512,11 @@ with col2:
             appliance_kwh[a] = kwh
             total += kwh
 
-        bill          = total * 8
+        if use_bill and avg_bill:
+            bill = avg_bill
+            total = bill / rate
+        else:
+            bill = total * rate
         carbon        = total * 0.82
         solar         = total / 120
         install       = solar * 60000
@@ -500,7 +529,7 @@ with col2:
         annual_saving = bill * 12
 
         # Appliance cost (sorted desc)
-        appliance_cost = {a: round(kwh * 8) for a, kwh in appliance_kwh.items()}
+        appliance_cost = {a: round(kwh * rate) for a, kwh in appliance_kwh.items()}
         sorted_costs   = sorted(appliance_cost.items(), key=lambda x: x[1], reverse=True)
         top_appliance, top_cost = sorted_costs[0]
         tip, saving_pct         = action_tips.get(top_appliance, ("Reduce daily usage", 0.20))
@@ -513,7 +542,17 @@ with col2:
         m2.metric("💰 Bill",   f"₹{bill:.0f}")
         m3.metric("🌍 CO₂",    f"{carbon:.0f} kg")
         m4.metric("☀ Solar",  f"{solar:.1f} kW")
-
+        st.markdown(f"""
+        <div class="gs-banner">
+            <div>
+                <div class="gs-banner-title">Smart Insight</div>
+                <div class="gs-banner-sub">
+                    Based on {state} tariff (₹{rate}/kWh) ·
+                    {'Real bill data used' if use_bill else 'Estimated usage model'}
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         # ── 2. SAVINGS BANNER ─────────────────────────────────────────────
         st.markdown(f"""
         <div class="gs-banner">
@@ -585,7 +624,7 @@ with col2:
         <div class="gs-carbon">
             <div>
                 <div class="gs-carbon-val">{credits:.2f}</div>
-                <div class="gs-carbon-lbl">carbon credits / year</div>
+               <div class="gs-carbon-lbl">estimated carbon offset potential</div>
             </div>
             <div class="gs-carbon-divider"></div>
             <div>
@@ -676,7 +715,7 @@ with col2:
             })
 
         if "Air Conditioner" in appliance_kwh:
-            ac_cost = appliance_kwh["Air Conditioner"] * 8
+            ac_cost = appliance_kwh["Air Conditioner"] * rate
             recs.append({
                 "icon": "❄️",
                 "title": "Optimise Air Conditioner",
@@ -698,14 +737,6 @@ with col2:
             "badge": ("LONG-TERM", "bi"),
             "body": "5-star rated appliances consume 20–40% less power. The upfront premium is typically recovered in 1–2 years through lower bills.",
         })
-
-        if credits > 0.5:
-            recs.append({
-                "icon": "🍃",
-                "title": "Earn Carbon Credits",
-                "badge": ("EARNING", "bg"),
-                "body": f"Going solar generates ~{credits:.2f} credits/year under India's Carbon Credit Trading Scheme (CCTS) — a real additional income stream.",
-            })
 
         recs.append({
             "icon": "⏰",
