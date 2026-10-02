@@ -172,9 +172,9 @@ div[data-baseweb="tag"] {
 
 /* ── TOP ACTION CARD ── */
 .gs-top-action {
-    background: #0b1620;
-    border: 1px solid rgba(0,170,204,.3);
-    border-left: 3px solid var(--accent2);
+    background: linear-gradient(135deg, #0b2018, #0d1815);
+    border: 1px solid rgba(0,214,143,.28);
+    border-left: 3px solid var(--accent);
     border-radius: var(--r);
     padding: 18px 22px;
     margin-bottom: 10px;
@@ -184,7 +184,7 @@ div[data-baseweb="tag"] {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.4px;
-    color: var(--accent2);
+    color: var(--accent);
     margin-bottom: 8px;
     display: block;
 }
@@ -318,8 +318,8 @@ div[data-baseweb="tag"] {
 
 /* ── RECOMMENDATION CARDS ── */
 .gs-rec {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #0b2018, #0e1916);
+    border: 1px solid rgba(0,214,143,.24);
     border-radius: var(--r);
     padding: 14px 18px;
     margin-bottom: 9px;
@@ -328,7 +328,10 @@ div[data-baseweb="tag"] {
     gap: 12px;
     transition: border-color .15s;
 }
-.gs-rec:hover { border-color: var(--border2); }
+.gs-rec:hover {
+    border-color: rgba(0,214,143,.55);
+    box-shadow: 0 4px 18px rgba(0,214,143,.08);
+}
 .gs-rec-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
 .gs-rec-title {
     font-family: var(--fh);
@@ -340,7 +343,7 @@ div[data-baseweb="tag"] {
     gap: 8px;
     flex-wrap: wrap;
 }
-.gs-rec-body { font-size: .79rem; color: var(--muted); margin-top: 4px; line-height: 1.55; }
+.gs-rec-body { font-size: .79rem; color: var(--text2); margin-top: 4px; line-height: 1.55; }
 .gs-badge {
     font-size: .62rem;
     font-weight: 700;
