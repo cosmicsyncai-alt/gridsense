@@ -479,7 +479,7 @@ with col1:
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
     avg_hours = st.slider("Average daily usage for standard appliances (hours)", 1, 24, 6)
-    st.caption("Air cooler and table fan use the hours above. CCTV camera and Wi-Fi router are set to 24 hours/day; electric kettle, hair dryer, and water pump motor are set to 30 minutes/day.")
+    st.caption("CCTV camera and Wi-Fi router are set to 24 hours/day.")
 
     appliance_inputs = {}
     if "Air Conditioner" in selected_appliances:
