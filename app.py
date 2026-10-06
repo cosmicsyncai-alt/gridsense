@@ -328,10 +328,7 @@ div[data-baseweb="tag"] {
     gap: 12px;
     transition: border-color .15s;
 }
-.gs-rec:hover {
-    border-color: rgba(0,214,143,.55);
-    box-shadow: 0 4px 18px rgba(0,214,143,.08);
-}
+.gs-rec:hover { border-color: rgba(0,214,143,.55); box-shadow: 0 4px 18px rgba(0,214,143,.08); }
 .gs-rec-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
 .gs-rec-title {
     font-family: var(--fh);
@@ -390,6 +387,13 @@ appliance_db = {
     "TV":                    {"watt": 120,  "type": "continuous"},
     "Air Conditioner":       {"type": "ac"},
     "Refrigerator":          {"type": "refrigerator"},
+    "Air Cooler":            {"watt": 200,  "type": "continuous"},
+    "Table Fan":             {"watt": 50,   "type": "continuous"},
+    "Electric Kettle":       {"watt": 1500, "type": "fixed", "hours": 0.5},
+    "Hair Dryer":            {"watt": 1200, "type": "fixed", "hours": 0.5},
+    "Water Pump Motor":      {"watt": 750,  "type": "fixed", "hours": 0.5},
+    "CCTV Camera":           {"watt": 10,   "type": "fixed", "hours": 24},
+    "Wi-Fi Router":          {"watt": 10,   "type": "fixed", "hours": 24},
     "Washing Machine":       {"watt": 500,  "type": "fixed", "hours": 0.5},
     "Microwave Oven":        {"watt": 1200, "type": "fixed", "hours": 0.3},
     "Water Heater (Geyser)": {"watt": 2000, "type": "fixed", "hours": 1},
@@ -411,6 +415,13 @@ action_tips = {
     "Ceiling Fan":           ("Upgrade to a 5-star rated BLDC fan — 65% more efficient", 0.30),
     "LED Light":             ("Install motion sensors or smart timers to avoid idle usage", 0.25),
     "Mixer Grinder":         ("Grind in batches to reduce total motor runtime", 0.15),
+    "Electric Kettle":       ("Boil only the amount of water you need and descale the kettle regularly", 0.10),
+    "Hair Dryer":            ("Use the lowest suitable heat setting and switch the dryer off between uses", 0.10),
+    "Water Pump Motor":      ("Check for leaks and avoid running the pump longer than needed to fill the tank", 0.15),
+    "Air Cooler":            ("Keep the cooler pads clean and provide ventilation so humid air can leave the room", 0.15),
+    "Table Fan":             ("Switch the fan off when the room is empty and compare rated wattage when replacing it", 0.10),
+    "CCTV Camera":           ("Check camera and recorder power ratings and disable unneeded features where appropriate", 0.05),
+    "Wi-Fi Router":          ("Use energy-saving settings if available and turn off guest networks when not needed", 0.05),
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -468,6 +479,7 @@ with col1:
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
     avg_hours = st.slider("Average daily usage for standard appliances (hours)", 1, 24, 6)
+    st.caption("Air cooler and table fan use the hours above. CCTV camera and Wi-Fi router are set to 24 hours/day; electric kettle, hair dryer, and water pump motor are set to 30 minutes/day.")
 
     appliance_inputs = {}
     if "Air Conditioner" in selected_appliances:
